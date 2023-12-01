@@ -1,5 +1,6 @@
-﻿namespace day_01;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace day_01;
 
 [TestClass]
 public class Tests
