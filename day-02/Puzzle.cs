@@ -32,8 +32,8 @@ record Game(string info)
 
     // the maximum number of cubes of the given color
     private int MaxOfColor(string color) =>
-        new Regex($@"\d+ {color}")
+        new Regex($@"(\d+) {color}")
             .Matches(info)
-            .Select(m => int.Parse(m.Value[..m.Value.IndexOf(' ')]))
+            .Select(m => int.Parse(m.Groups[1].Value))
             .Max();
 }
