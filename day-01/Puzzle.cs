@@ -1,4 +1,6 @@
-﻿namespace day_01;
+﻿using System.Text.RegularExpressions;
+
+namespace day_01;
 
 public class Puzzle
 {
@@ -19,36 +21,31 @@ public class Puzzle
 
     public int Part2()
     {
+        var regex = new Regex(@"(\d|one|two|three|four|five|six|seven|eight|nine)");
         return input
-            .Select(Normalize)
-            .Select(row => row.First(c => char.IsDigit(c)) + "" + row.Last(c => char.IsDigit(c)))
+            .Select(row =>
+            {
+                var matches = regex.Matches(row);
+                return Map(matches.First().Value) + Map(matches.Last().Value);
+            })
             .Select(int.Parse)
             .Sum();
     }
 
-    string Normalize(string str)
+    string Map(string str)
     {
-        var result = "";
-        for (var i = 0; i < str.Length; i++)
+        switch (str)
         {
-            var c = str[i];
-            if (char.IsDigit(c))
-            {
-                result += c;
-            }
-            else
-            {
-                if (str.Remove(0, i).StartsWith("one")) { result += "1"; }
-                if (str.Remove(0, i).StartsWith("two")) { result += "2"; }
-                if (str.Remove(0, i).StartsWith("three")) { result += "3"; }
-                if (str.Remove(0, i).StartsWith("four")) { result += "4"; }
-                if (str.Remove(0, i).StartsWith("five")) { result += "5"; }
-                if (str.Remove(0, i).StartsWith("six")) { result += "6"; }
-                if (str.Remove(0, i).StartsWith("seven")) { result += "7"; }
-                if (str.Remove(0, i).StartsWith("eight")) { result += "8"; }
-                if (str.Remove(0, i).StartsWith("nine")) { result += "9"; }
-            }
+            case "one": return "1";
+            case "two": return "2";
+            case "three": return "3";
+            case "four": return "4";
+            case "five": return "5";
+            case "six": return "6";
+            case "seven": return "7";
+            case "eight": return "8";
+            case "nine": return "9";
+            default: return str;
         }
-        return result;
     }
 }
