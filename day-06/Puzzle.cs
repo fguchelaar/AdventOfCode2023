@@ -33,8 +33,8 @@ public class Puzzle
                 .Aggregate("", (a, b) => a + b));
 
         var range = Enumerable.Range(0, totalTime);
-        var first = range.First(ms => (totalTime - ms) * ms > totalDistance);
-        var last = range.Last(ms => (totalTime - ms) * ms > totalDistance);
+        var first = range.First(ms => (totalTime - (long)ms) * ms > totalDistance);
+        var last = range.Last(ms => (totalTime - (long)ms) * ms > totalDistance);
         return last - first + 1;
     }
 }
