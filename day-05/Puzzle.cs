@@ -20,7 +20,7 @@ public class Puzzle
             var newMap = new Map(sourceCategory, destinationCategory);
             foreach (var line in lines.Skip(1))
             {
-                newMap.Ranges.Add(Range.Parse(line));
+                newMap.RangeMaps.Add(RangeMap.Parse(line));
             }
             almanac.Add(newMap);
         }
@@ -40,24 +40,19 @@ public class Puzzle
 
     public long Part2()
     {
-        var closestLocation = long.MaxValue;
+        var ranges = new List<Range>();
         var seeds = new List<long>(this.seeds);
-        Console.WriteLine($"Total ranges: {seeds.Count() / 2}");
         for (int i = 0; i < seeds.Count(); i += 2)
         {
-
-            var start = seeds[i];
-            var range = seeds[i + 1];
-
-            Console.WriteLine($"Range {start} - {start + range} (#{range})");
-
-            for (long seed = start; seed < start + range; seed++)
+            var testRange = new Range(seeds[i], seeds[i] + seeds[i + 1] - 1);
+            var tempRanges = new List<Range>() { testRange };
+            foreach (var map in almanac)
             {
-                closestLocation = Math.Min(closestLocation, almanac.Aggregate(seed, (location, map) => map.Convert(location)));
+                tempRanges = map.Cut(tempRanges.ToArray()).ToList();
             }
+            ranges.AddRange(tempRanges);
         }
-
-        return closestLocation;
+        return ranges.Min(r => r.Start);
     }
 }
 
@@ -66,18 +61,18 @@ class Map
     string SourceCategory { get; init; }
     string DestinationCategory { get; init; }
 
-    public IList<Range> Ranges { get; init; }
+    public IList<RangeMap> RangeMaps { get; init; }
 
     public Map(string sourceCategory, string destinationCategory)
     {
         SourceCategory = sourceCategory;
         DestinationCategory = destinationCategory;
-        Ranges = new List<Range>();
+        RangeMaps = new List<RangeMap>();
     }
 
     public long Convert(long value)
     {
-        foreach (var range in Ranges)
+        foreach (var range in RangeMaps)
         {
             if (range.Contains(value))
             {
@@ -87,19 +82,87 @@ class Map
         return value;
     }
 
+    public Range[] Cut(Range[] ranges)
+    {
+        var result = new List<Range>();
+        var tempRanges = new List<Range>();
+        tempRanges.AddRange(ranges);
+        while (tempRanges.Any())
+        {
+            var range = tempRanges.First();
+            tempRanges.RemoveAt(0);
+
+            var didCut = true;
+            foreach (var map in RangeMaps)
+            {
+                didCut = true;
+                var mask = new Range(map.source, map.source + map.length - 1);
+                var delta = map.destination - map.source;
+                // map outside of range
+                if (!mask.Contains(range.Start) && !mask.Contains(range.End))
+                {
+                    didCut = false;
+                    continue;
+                }
+                // mask starts inside of range
+                else if (mask.Contains(range.Start) && !mask.Contains(range.End))
+                {
+                    var newRange = new Range(range.Start + delta, mask.End + delta);
+                    result.Add(newRange);
+                    tempRanges.Add(new Range(mask.End + 1, range.End));
+                    break;
+                }
+                // mask completely consumes range
+                else if (mask.Contains(range.Start) && mask.Contains(range.End))
+                {
+                    var newRange = new Range(range.Start + delta, range.End + delta);
+                    result.Add(newRange);
+                    break;
+                }
+                // map in the middle of range
+                else if (range.Start < mask.Start && range.End > mask.End)
+                {
+                    var newRange = new Range(mask.Start + delta, mask.End + delta);
+                    result.Add(newRange);
+
+                    tempRanges.Add(new Range(range.Start, mask.Start));
+                    tempRanges.Add(new Range(mask.End + 1, range.End));
+                    break;
+                }
+                // map end inside of range
+                else if (!mask.Contains(range.Start) && mask.Contains(range.End))
+                {
+                    var newRange = new Range(mask.Start + delta, range.End + delta);
+                    result.Add(newRange);
+                    tempRanges.Add(new Range(range.Start, mask.Start - 1));
+                    break;
+                }
+            }
+            if (!didCut)
+            {
+                result.Add(range);
+            }
+
+        }
+        return result.ToArray();
+    }
 }
 
-record Range(long destination, long source, long length)
+record Range(long Start, long End)
 {
+    public bool Contains(long value) => value >= Start && value <= End;
+}
 
+record RangeMap(long destination, long source, long length)
+{
     public bool Contains(long value) => value >= source && value < source + length;
 
     public long Map(long value) => Contains(value) ? value - source + destination : value;
 
-    public static Range Parse(string line)
+    public static RangeMap Parse(string line)
     {
         var parts = line.Split(" ");
-        return new Range(long.Parse(parts[0]), long.Parse(parts[1]), long.Parse(parts[2]));
+        return new RangeMap(long.Parse(parts[0]), long.Parse(parts[1]), long.Parse(parts[2]));
     }
 
 }
