@@ -1,6 +1,4 @@
-﻿using AdventKit;
-
-namespace day_09;
+﻿namespace day_09;
 
 public class Puzzle
 {
@@ -40,30 +38,7 @@ public class Puzzle
     /// </summary>
     List<int> Differences(List<int> history) => history.Zip(history.Skip(1), (a, b) => b - a).ToList();
 
-    public int Part1() => stacks
-        .Select(s => s.Clone())
-        .Sum(stack =>
-        {
-            var toAdd = stack.Pop().Last();
-            while (stack.Count > 0)
-            {
-                var next = stack.Pop();
-                toAdd = next.Last() + toAdd;
-            }
-            return toAdd;
-        });
+    public int Part1() => stacks.Sum(stack => stack.Aggregate(0, (a, b) => a + b.Last()));
 
-
-    public int Part2() => stacks
-        .Select(s => s.Clone())
-        .Sum(stack =>
-        {
-            var toAdd = stack.Pop().First();
-            while (stack.Count > 0)
-            {
-                var next = stack.Pop();
-                toAdd = next.First() - toAdd;
-            }
-            return toAdd;
-        });
+    public int Part2() => stacks.Sum(stack => stack.Aggregate(0, (a, b) => b.First() - a));
 }
