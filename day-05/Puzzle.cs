@@ -3,7 +3,7 @@
 public class Puzzle
 {
     private readonly IEnumerable<long> seeds;
-    private readonly IList<Map> almanac;
+    private readonly List<Map> almanac;
 
     public Puzzle(string input)
     {
@@ -11,13 +11,11 @@ public class Puzzle
         var parts = input.Trim().Split($"\n\n");
         seeds = parts[0].Split(" ").Skip(1).Select(long.Parse);
 
-        almanac = new List<Map>();
+        almanac = [];
         foreach (var map in parts.Skip(1))
         {
             var lines = map.Split("\n");
-            var sourceCategory = lines[0].Split(" ")[0].Split("-")[0];
-            var destinationCategory = lines[0].Split(" ")[0].Split("-")[2];
-            var newMap = new Map(sourceCategory, destinationCategory);
+            var newMap = new Map();
             foreach (var line in lines.Skip(1))
             {
                 newMap.RangeMaps.Add(RangeMap.Parse(line));
@@ -42,7 +40,7 @@ public class Puzzle
     {
         var ranges = new List<Range>();
         var seeds = new List<long>(this.seeds);
-        for (int i = 0; i < seeds.Count(); i += 2)
+        for (int i = 0; i < seeds.Count; i += 2)
         {
             var testRange = new Range(seeds[i], seeds[i] + seeds[i + 1] - 1);
             var tempRanges = new List<Range>() { testRange };
@@ -58,17 +56,7 @@ public class Puzzle
 
 class Map
 {
-    string SourceCategory { get; init; }
-    string DestinationCategory { get; init; }
-
-    public IList<RangeMap> RangeMaps { get; init; }
-
-    public Map(string sourceCategory, string destinationCategory)
-    {
-        SourceCategory = sourceCategory;
-        DestinationCategory = destinationCategory;
-        RangeMaps = new List<RangeMap>();
-    }
+    public IList<RangeMap> RangeMaps { get; init; } = new List<RangeMap>();
 
     public long Convert(long value)
     {
@@ -87,7 +75,7 @@ class Map
         var result = new List<Range>();
         var tempRanges = new List<Range>();
         tempRanges.AddRange(ranges);
-        while (tempRanges.Any())
+        while (tempRanges.Count != 0)
         {
             var range = tempRanges.First();
             tempRanges.RemoveAt(0);

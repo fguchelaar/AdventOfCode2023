@@ -2,17 +2,12 @@
 
 namespace day_03;
 
-public partial class Puzzle
+public partial class Puzzle(string input)
 {
     [GeneratedRegex(@"\d+")]
     private static partial Regex DigitsRegex();
 
-    private readonly string[] input;
-
-    public Puzzle(string input)
-    {
-        this.input = input.Trim().Split("\n");
-    }
+    private readonly string[] input = input.Trim().Split("\n");
 
     public int Part1()
     {

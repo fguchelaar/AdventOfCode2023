@@ -74,7 +74,6 @@ public class Puzzle
                         count++;
                     }
                 }
-
             }
         }
         return count;

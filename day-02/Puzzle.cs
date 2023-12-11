@@ -2,23 +2,18 @@
 
 namespace day_02;
 
-public class Puzzle
+public class Puzzle(string input)
 {
-    private readonly IEnumerable<Game> games;
-
-    public Puzzle(string input)
-    {
-        games = input.Trim().Split("\n").Select(line => new Game(line));
-    }
+    private readonly IEnumerable<Game> games = input.Trim().Split("\n").Select(line => new Game(line));
 
     public int Part1() => games.Where(game => game.IsPossible).Sum(g => g.Id);
 
     public int Part2() => games.Sum(g => g.Power);
 }
 
-record Game(string info)
+record Game(string Info)
 {
-    public int Id => int.Parse(info[5..info.IndexOf(':')]);
+    public int Id => int.Parse(Info[5..Info.IndexOf(':')]);
 
     // only 12 red cubes, 13 green cubes, and 14 blue cubes
     public bool IsPossible =>
@@ -33,7 +28,7 @@ record Game(string info)
     // the maximum number of cubes of the given color
     private int MaxOfColor(string color) =>
         new Regex($@"(\d+) {color}")
-            .Matches(info)
+            .Matches(Info)
             .Select(m => int.Parse(m.Groups[1].Value))
             .Max();
 }

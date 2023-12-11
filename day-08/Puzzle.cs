@@ -6,20 +6,21 @@ public class Puzzle
 {
     private readonly IEnumerable<char> instructions;
     private readonly IDictionary<string, (string, string)> network;
+    private static readonly char[] separator = [' ', '=', '(', ',', ')'];
 
     public Puzzle(string input)
     {
         var parts = input.Trim().Split("\n\n");
         instructions = parts[0].ToCharArray();
         network = parts[1].Split("\n")
-            .Select(x => x.Split(new char[] { ' ', '=', '(', ',', ')' }, StringSplitOptions.RemoveEmptyEntries))
+            .Select(x => x.Split(separator, StringSplitOptions.RemoveEmptyEntries))
             .ToDictionary(x => x[0], x => (x[1], x[2]));
     }
 
     public int Part1() => NumberOfSteps("AAA", x => x == "ZZZ");
 
-    public long Part2() => network.Keys.Where(x => x.EndsWith("A"))
-            .Select(x => (long)NumberOfSteps(x, y => y.EndsWith("Z"))) // use long to avoid overflow!
+    public long Part2() => network.Keys.Where(x => x.EndsWith('A'))
+            .Select(x => (long)NumberOfSteps(x, y => y.EndsWith('Z'))) // use long to avoid overflow!
             .Aggregate(NumberOperations.LCM);
 
     public int NumberOfSteps(string start, Func<string, bool> stopCondition)

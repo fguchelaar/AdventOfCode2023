@@ -2,50 +2,38 @@
 
 namespace day_01;
 
-public class Puzzle
+public partial class Puzzle(string input)
 {
-    private readonly string[] input;
+    private readonly string[] input = input.Trim().Split("\n");
 
-    public Puzzle(string input)
-    {
-        this.input = input.Trim().Split("\n");
-    }
-
-    public int Part1()
-    {
-        return input
+    public int Part1() => input
             .Select(row => row.First(c => char.IsDigit(c)) + "" + row.Last(c => char.IsDigit(c)))
             .Select(int.Parse)
             .Sum();
-    }
 
-    public int Part2()
-    {
-        var regex = new Regex(@"(\d|one|two|three|four|five|six|seven|eight|nine)");
-        return input
+    [GeneratedRegex(@"(\d|one|two|three|four|five|six|seven|eight|nine)")]
+    private static partial Regex NumberFindRegex();
+
+    public int Part2() => input
             .Select(row =>
             {
-                var matches = regex.Matches(row);
+                var matches = NumberFindRegex().Matches(row);
                 return Map(matches.First().Value) + Map(matches.Last().Value);
             })
             .Select(int.Parse)
             .Sum();
-    }
 
-    string Map(string str)
+    string Map(string str) => str switch
     {
-        switch (str)
-        {
-            case "one": return "1";
-            case "two": return "2";
-            case "three": return "3";
-            case "four": return "4";
-            case "five": return "5";
-            case "six": return "6";
-            case "seven": return "7";
-            case "eight": return "8";
-            case "nine": return "9";
-            default: return str;
-        }
-    }
+        "one" => "1",
+        "two" => "2",
+        "three" => "3",
+        "four" => "4",
+        "five" => "5",
+        "six" => "6",
+        "seven" => "7",
+        "eight" => "8",
+        "nine" => "9",
+        _ => str,
+    };
 }

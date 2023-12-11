@@ -1,41 +1,36 @@
 ﻿namespace day_04;
 
-public class Puzzle
+public class Puzzle(string input)
 {
-    private readonly IEnumerable<Card> cards;
-
-    public Puzzle(string input)
-    {
-        cards = input.Trim().Split("\n").Select(line => new Card(line));
-    }
+    private readonly IEnumerable<Card> cards = input.Trim().Split("\n").Select(line => new Card(line));
 
     public int Part1() => cards
         .Select(card => card.Points)
         .Sum();
 
     public int Part2() => cards
-            .Aggregate(new Dictionary<int, int>(), (winnings, card) =>
-            {
-                // Add the card itself to the winnings
-                if (!winnings.ContainsKey(card.Id)) winnings[card.Id] = 0;
-                winnings[card.Id] += 1;
+        .Aggregate(new Dictionary<int, int>(), (winnings, card) =>
+        {
+            // Add the card itself to the winnings
+            if (!winnings.ContainsKey(card.Id)) winnings[card.Id] = 0;
+            winnings[card.Id] += 1;
 
-                // Add the copies of the cards we won
-                for (int i = 1; i <= card.CountOfMatching && i < cards.Count(); i++)
-                {
-                    var newCard = card.Id + i;
-                    if (!winnings.ContainsKey(newCard)) winnings[newCard] = 0;
-                    winnings[newCard] += winnings[card.Id];
-                }
-                return winnings;
-            })
-            .Sum(w => w.Value);
+            // Add the copies of the cards we won
+            for (int i = 1; i <= card.CountOfMatching && i < cards.Count(); i++)
+            {
+                var newCard = card.Id + i;
+                if (!winnings.ContainsKey(newCard)) winnings[newCard] = 0;
+                winnings[newCard] += winnings[card.Id];
+            }
+            return winnings;
+        })
+        .Sum(w => w.Value);
 }
 
 class Card
 {
-    private IEnumerable<int> winningNumbers;
-    private IEnumerable<int> numbersYouHave;
+    private readonly IEnumerable<int> winningNumbers;
+    private readonly IEnumerable<int> numbersYouHave;
 
     public int Id { get; }
     public int CountOfMatching => winningNumbers.Intersect(numbersYouHave).Count();
