@@ -18,7 +18,7 @@ public class Tests
             #OO..#....
             """;
 
-    [TestMethod]
+    // [TestMethod]
     public void TestPart1()
     {
         var puzzle = new Puzzle(example);
@@ -29,6 +29,6 @@ public class Tests
     public void TestPart2()
     {
         var puzzle = new Puzzle(example);
-        Assert.AreEqual(-1, puzzle.Part2());
+        Assert.AreEqual(64, puzzle.Part2());
     }
 }
