@@ -88,13 +88,13 @@ public class Puzzle
 
     public int Part2()
     {
-        Console.WriteLine(Cycle(122));
+        // Console.WriteLine(Cycle(122));
 
         var rest = (1_000_000_000 - 122) % 22;
 
-        Console.WriteLine(Cycle(rest));
+        // Console.WriteLine(Cycle(rest));
         // Cycle(1_000_000_000);
-        return -1;
+        return Cycle(rest);
     }
 
     public int Cycle(int times)
