@@ -2,22 +2,13 @@
 
 namespace day_15;
 
-public class Puzzle
+public class Puzzle(string input)
 {
-    private readonly string input;
-    private readonly Dictionary<int, OrderedDictionary> boxes;
+    private readonly string input = input.Trim();
 
-    public Puzzle(string input)
-    {
-        this.input = input.Trim();
+    private readonly Dictionary<int, OrderedDictionary> boxes =
+        Enumerable.Range(0, 256).ToDictionary(i => i, i => new OrderedDictionary());
 
-        boxes = [];
-        // initialize the boxes
-        for (int i = 0; i < 256; i++)
-        {
-            boxes[i] = [];
-        }
-    }
     int Hash(string str) => str.Aggregate(0, (acc, ch) => (acc + ch) * 17 % 256);
 
     public int Part1() => input.Split(',').Select(Hash).Sum();
