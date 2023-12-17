@@ -1,7 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AdventKit;
 
-namespace day_10;
+namespace AdventKit;
 
 [TestClass]
 public class Tests
