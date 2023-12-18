@@ -18,8 +18,6 @@ public class Puzzle
 
     public int Part1()
     {
-        // 716: too high
-
         int h(Step step, Point target)
         {
             // return 1;
@@ -58,7 +56,6 @@ public class Puzzle
             if (current.position == target)
             {
                 var path = ReconstructPath(cameFrom, current);
-                PrintGrid(path);
                 return path.Sum(s => grid[s.position.Y][s.position.X]) - grid[0][0];
             }
             foreach (var neighbor in GetNeighbors(current))
@@ -77,10 +74,7 @@ public class Puzzle
                 }
             }
         }
-
-        Console.WriteLine("Came from: " + cameFrom.Count);
-        Console.WriteLine($"{cameFrom}");
-        return -1;
+        throw new Exception("No path found");
     }
 
     public int Part2()
@@ -124,7 +118,6 @@ public class Puzzle
             if (current.position == target)
             {
                 var path = ReconstructPath(cameFrom, current);
-                PrintGrid(path);
                 return path.Sum(s => grid[s.position.Y][s.position.X]) - grid[0][0];
             }
             foreach (var neighbor in GetNeighbors2(current))
@@ -143,10 +136,7 @@ public class Puzzle
                 }
             }
         }
-
-        Console.WriteLine("Came from: " + cameFrom.Count);
-        Console.WriteLine($"{cameFrom}");
-        return -1;
+        throw new Exception("No path found");
     }
     IEnumerable<Step> GetNeighbors(Step step)
     {
@@ -196,31 +186,6 @@ public class Puzzle
                 return 1;
         }
     }
-
-    void PrintGrid(List<Step> path)
-    {
-        Console.WriteLine($"Path {path.Count}:");
-        foreach (var s in path)
-        {
-            Console.WriteLine($"{s}");
-        }
-
-        Console.WriteLine();
-
-        for (int y = 0; y < height; y++)
-        {
-            var line = "";
-            for (int x = 0; x < width; x++)
-            {
-                var pos = new Point(x, y);
-                if (path.Any(s => s.position == pos))
-                    line += " ";
-                else
-                    line += grid[y][x];
-            }
-            Console.WriteLine(line);
-        }
-    }
 }
 
 struct Step
@@ -228,6 +193,4 @@ struct Step
     public Point position;
     public Point previous;
     public int count;
-
-    override public string ToString() => $"({position}, {previous}, {count})";
 }
