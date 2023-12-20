@@ -36,6 +36,7 @@ public class Tests
     public void TestPart2()
     {
         var puzzle = new Puzzle(example);
-        Assert.AreEqual(167409079868000, puzzle.Part2());
+        Assert.AreEqual(167_409_079_868_000, puzzle.Part2());
+        //              256_000_000_000_000
     }
 }
