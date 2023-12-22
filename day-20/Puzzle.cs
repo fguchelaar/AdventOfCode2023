@@ -50,7 +50,7 @@ class FlipFlopModule : Module
 
 class ConjunctionModule : Module
 {
-    private Dictionary<string, bool> mostRecent = new Dictionary<string, bool>();
+    public Dictionary<string, bool> mostRecent = new Dictionary<string, bool>();
     public void AddInput(string name)
     {
         mostRecent[name] = LOW;
@@ -166,6 +166,20 @@ public class Puzzle
 
                 var module = modules[to];
 
+                if (module.Name == "qn")
+                {
+
+                    var cm = module as ConjunctionModule;
+                    if (cm.mostRecent.Any(x => x.Value == Module.HIGH))
+                    {
+                        Console.WriteLine($"{buttonCount,10})");
+                        foreach (var (name, value) in cm.mostRecent)
+                        {
+                            Console.WriteLine($"{name}: {value}");
+                        }
+                    }
+                }
+
                 if (module.Name == "rx")
                 {
                     if (pulse == Module.LOW) rxLowCount++;
@@ -182,10 +196,10 @@ public class Puzzle
                 }
             }
 
-            if (buttonCount % 100_000 == 0)
-            {
-                Console.WriteLine($"{buttonCount,10}) RX: {rxLowCount,4} {rxHighCount,4}");
-            }
+            // if (buttonCount % 100_000 == 0)
+            // {
+            //     Console.WriteLine($"{buttonCount,10}) RX: {rxLowCount,4} {rxHighCount,4}");
+            // }
             if (rxLowCount != 0 || rxHighCount != 0)
             {
                 Console.WriteLine($"{buttonCount,10}) RX: {rxLowCount,4} {rxHighCount,4}");
